@@ -6,18 +6,23 @@
 <title>Tetris</title>
 <style>
   :root {
-    --bg: #0f1020;
-    --panel: #1a1b33;
-    --border: #2e3060;
-    --text: #e8e9ff;
-    --muted: #9092c0;
-    --accent: #6c7bff;
+    /* Couleurs Wavestone : Persian Blue #451DC7, Shark #191A1C, blanc */
+    color-scheme: light;
+    --bg: #f4f2fc;
+    --panel: #ffffff;
+    --border: #dcd5f7;
+    --text: #191a1c;
+    --muted: #5d5873;
+    --accent: #451dc7;
+    --board: #191a1c;
+    --board-edge: #451dc7;
+    --key: #ece8fb;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    min-height: 100vh;
-    background: radial-gradient(circle at top, #1c1e40, var(--bg));
+    min-height: 100%;
+    background: var(--bg);
     color: var(--text);
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     display: flex;
@@ -35,10 +40,10 @@
   .board-wrap { position: relative; }
   canvas#board {
     display: block;
-    background: #08091a;
-    border: 3px solid var(--border);
+    background: var(--board);
+    border: 3px solid var(--board-edge);
     border-radius: 8px;
-    box-shadow: 0 10px 40px rgba(0,0,0,.5);
+    box-shadow: 0 10px 40px rgba(69,29,199,.25);
     max-width: 100%;
     height: auto;
   }
@@ -49,14 +54,15 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(8,9,26,.85);
+    background: rgba(25,26,28,.88);
+    color: #ffffff;
     border-radius: 8px;
     text-align: center;
     gap: 12px;
   }
   .overlay.hidden { display: none; }
   .overlay h2 { margin: 0; font-size: 2rem; letter-spacing: 2px; }
-  .overlay p { margin: 0; color: var(--muted); }
+  .overlay p { margin: 0; color: #c9c0f2; }
   button {
     background: var(--accent);
     color: #fff;
@@ -68,6 +74,7 @@
     font-weight: 600;
   }
   button:hover { filter: brightness(1.15); }
+  button:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
   .side {
     display: flex;
     flex-direction: column;
@@ -90,13 +97,14 @@
   .stat { font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums; }
   .keys { font-size: .85rem; color: var(--muted); line-height: 1.7; }
   kbd {
-    background: #2a2c55;
+    background: var(--key);
     border-radius: 4px;
     padding: 1px 6px;
     color: var(--text);
     font-family: inherit;
     font-size: .8rem;
   }
+  #next, #hold { display: block; background: var(--board); border-radius: 6px; }
   .touch {
     display: none;
     grid-template-columns: repeat(3, 1fr);
@@ -104,7 +112,7 @@
     margin-top: 12px;
     width: 100%;
   }
-  .touch button { padding: 14px 0; font-size: 1.2rem; background: #2a2c55; }
+  .touch button { padding: 14px 0; font-size: 1.2rem; background: var(--key); color: var(--accent); }
   @media (hover: none) and (pointer: coarse) { .touch { display: grid; } }
 </style>
 </head>
@@ -167,8 +175,8 @@
   const el = id => document.getElementById(id);
 
   const COLORS = {
-    I: '#35d0f0', O: '#f5d63a', T: '#b25cf0', S: '#4fdc6a',
-    Z: '#f0525c', J: '#4a78f5', L: '#f59a35'
+    I: '#451dc7', O: '#ffffff', T: '#8a6cf0', S: '#b9a8f8',
+    Z: '#6a3de8', J: '#2e128f', L: '#d8cffb'
   };
   const SHAPES = {
     I: [[0,0,0,0],[1,1,1,1],[0,0,0,0],[0,0,0,0]],
@@ -350,7 +358,7 @@
   }
 
   function draw() {
-    ctx.fillStyle = '#08091a';
+    ctx.fillStyle = '#191a1c';
     ctx.fillRect(0, 0, board.width, board.height);
     ctx.strokeStyle = 'rgba(255,255,255,.04)';
     for (let x = 1; x < COLS; x++) {
@@ -413,7 +421,7 @@
     overlayTitle.textContent = title;
     overlayText.textContent = text;
     startBtn.textContent = btn;
-    startBtn.style.display = btn ? '' : 'none';
+    startBtn.hidden = !btn;
     overlay.classList.remove('hidden');
   }
 
